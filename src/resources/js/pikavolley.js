@@ -282,7 +282,9 @@ export class PikachuVolleyball {
    * @type {GameState}
    */
   startOfNewGame() {
+    
     if (this.frameCounter === 0) {
+      console.log('start game')
       this.view.game.visible = true;
       this.gameEnded = false;
       this.roundEnded = false;
@@ -377,6 +379,9 @@ export class PikachuVolleyball {
           this.physics.player2.isWinner = true;
           this.physics.player1.gameEnded = true;
           this.physics.player2.gameEnded = true;
+          // Loop the game
+          console.log('game ended');
+          this.startOfNewGame();
         }
       } else {
         this.isPlayer2Serve = false;
@@ -387,6 +392,9 @@ export class PikachuVolleyball {
           this.physics.player2.isWinner = false;
           this.physics.player1.gameEnded = true;
           this.physics.player2.gameEnded = true;
+          // Loop the game
+          console.log('game ended');
+          this.startOfNewGame();
         }
       }
       this.view.game.drawScoresToScoreBoards(this.scores);
