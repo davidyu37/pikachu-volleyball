@@ -304,7 +304,7 @@ export class PikachuVolleyball {
       this.view.game.drawPlayersAndBall(this.physics);
 
       this.view.fadeInOut.setBlackAlphaTo(1); // set black screen
-      this.audio.sounds.bgm.play();
+      // this.audio.sounds.bgm.play();
     }
 
     this.view.game.drawGameStartMessage(
@@ -381,6 +381,7 @@ export class PikachuVolleyball {
           this.physics.player2.gameEnded = true;
           // Loop the game
           console.log('game ended');
+          this.audio.sounds.bgm.stop();
           this.startOfNewGame();
         }
       } else {
@@ -394,6 +395,7 @@ export class PikachuVolleyball {
           this.physics.player2.gameEnded = true;
           // Loop the game
           console.log('game ended');
+          this.audio.sounds.bgm.stop();
           this.startOfNewGame();
         }
       }

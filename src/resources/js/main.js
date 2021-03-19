@@ -100,6 +100,9 @@ function setUpInitialUI() {
   };
   aboutBtn.addEventListener('click', closeAboutBox);
   closeAboutBtn.addEventListener('click', closeAboutBox);
+
+  // SKIP INITIAL EXPLAINATION
+  closeAboutBox();
 }
 
 /**
@@ -116,6 +119,7 @@ function setup() {
  * @param {PikachuVolleyball} pikaVolley
  */
 function start(pikaVolley) {
+
   ticker.maxFPS = pikaVolley.normalFPS;
   ticker.add(() => {
     pikaVolley.gameLoop();

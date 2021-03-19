@@ -168,7 +168,7 @@ function setUpBtns(pikaVolley, ticker) {
     mediumSpeedBtn.classList.remove('selected');
     fastSpeedBtn.classList.add('selected');
 
-    pikaVolley.normalFPS = 30;
+    pikaVolley.normalFPS = 60;
     ticker.maxFPS = pikaVolley.normalFPS;
   });
 
