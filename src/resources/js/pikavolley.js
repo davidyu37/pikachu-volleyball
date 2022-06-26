@@ -33,6 +33,7 @@ export class PikachuVolleyball {
     this.view.menu.visible = false;
     this.view.game.visible = false;
     this.view.fadeInOut.visible = false;
+    this.trainingMode = false;
 
     this.audio = new PikaAudio(resources);
     this.physics = new PikaPhysics(true, true);
@@ -121,17 +122,21 @@ export class PikachuVolleyball {
     if (this.slowMotionFramesLeft > 0) {
       this.slowMotionNumOfSkippedFrames++;
       if (
+        !this.trainingMode &&
         this.slowMotionNumOfSkippedFrames %
           Math.round(this.normalFPS / this.slowMotionFPS) !==
-        0
+          0
       ) {
         return;
       }
       this.slowMotionFramesLeft--;
       this.slowMotionNumOfSkippedFrames = 0;
     }
-    // can use this.physics as enviroment inputs?
-    // console.log(this.physics);
+
+    if (this.trainingMode) {
+      // can use this.physics as enviroment inputs?
+      // console.log(this.physics);
+    }
 
     // catch keyboard input and freeze it
     this.keyboardArray[0].getInput();
@@ -165,6 +170,47 @@ export class PikachuVolleyball {
       this.frameCounter = 0;
       this.view.intro.visible = false;
       this.state = this.menu;
+    }
+  }
+
+  // Training mode: setup environment to train AI in tensorflow
+  training() {
+    if (this.frameCounter === 0) {
+      console.log('start game');
+      this.view.game.visible = true;
+      this.gameEnded = false;
+      this.roundEnded = false;
+      this.isPlayer2Serve = false;
+      this.physics.player1.gameEnded = false;
+      this.physics.player1.isWinner = false;
+      this.physics.player2.gameEnded = false;
+      this.physics.player2.isWinner = false;
+
+      this.scores[0] = 0;
+      this.scores[1] = 0;
+      this.view.game.drawScoresToScoreBoards(this.scores);
+
+      this.physics.player1.initializeForNewRound();
+      this.physics.player2.initializeForNewRound();
+      this.physics.ball.initializeForNewRound(this.isPlayer2Serve);
+      this.view.game.drawPlayersAndBall(this.physics);
+
+      this.view.fadeInOut.setBlackAlphaTo(1); // set black screen
+      // this.audio.sounds.bgm.play();
+    }
+
+    this.view.game.drawGameStartMessage(
+      this.frameCounter,
+      this.frameTotal.startOfNewGame
+    );
+    this.view.game.drawCloudsAndWave();
+    this.view.fadeInOut.changeBlackAlphaBy(-(1 / 17)); // fade in
+    this.frameCounter++;
+
+    if (this.frameCounter >= this.frameTotal.startOfNewGame) {
+      this.frameCounter = 0;
+      this.view.fadeInOut.setBlackAlphaTo(0);
+      this.state = this.round;
     }
   }
 
@@ -375,30 +421,24 @@ export class PikachuVolleyball {
       if (this.physics.ball.punchEffectX < 216) {
         this.isPlayer2Serve = true;
         this.scores[1] += 1;
-        if (this.scores[1] >= this.winningScore) {
+        if (!this.training && this.scores[1] >= this.winningScore) {
           this.gameEnded = true;
           this.physics.player1.isWinner = false;
           this.physics.player2.isWinner = true;
           this.physics.player1.gameEnded = true;
           this.physics.player2.gameEnded = true;
-          // Loop the game
-          console.log('game ended');
           this.audio.sounds.bgm.stop();
-          this.startOfNewGame();
         }
       } else {
         this.isPlayer2Serve = false;
         this.scores[0] += 1;
-        if (this.scores[0] >= this.winningScore) {
+        if (!this.training && this.scores[0] >= this.winningScore) {
           this.gameEnded = true;
           this.physics.player1.isWinner = true;
           this.physics.player2.isWinner = false;
           this.physics.player1.gameEnded = true;
           this.physics.player2.gameEnded = true;
-          // Loop the game
-          console.log('game ended');
           this.audio.sounds.bgm.stop();
-          this.startOfNewGame();
         }
       }
       this.view.game.drawScoresToScoreBoards(this.scores);
@@ -518,6 +558,18 @@ export class PikachuVolleyball {
     this.view.menu.visible = false;
     this.view.game.visible = false;
     this.state = this.intro;
+  }
+
+  startTraining() {
+    this.trainingMode = true;
+    this.noInputFrameCounter = 0;
+    this.slowMotionFramesLeft = 0;
+    this.slowMotionNumOfSkippedFrames = 0;
+    this.view.menu.visible = false;
+    this.view.game.visible = true;
+    this.physics = new PikaPhysics(true, true, true);
+    this.physics.player1.isComputer = false;
+    this.state = this.training;
   }
 
   /** @return {boolean} */

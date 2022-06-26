@@ -103,6 +103,15 @@ function setUpBtns(pikaVolley, ticker) {
     pikaVolley.restart();
   });
 
+  const trainBtn = document.getElementById('train-btn');
+  trainBtn.addEventListener('click', () => {
+    if (pauseBtn.classList.contains('selected')) {
+      pauseBtn.classList.remove('selected');
+      pauseResumeManager.resume(pikaVolley, PauseResumePrecedence.pauseBtn);
+    }
+    pikaVolley.startTraining();
+  });
+
   const bgmOnBtn = document.getElementById('bgm-on-btn');
   const bgmOffBtn = document.getElementById('bgm-off-btn');
   bgmOnBtn.addEventListener('click', () => {

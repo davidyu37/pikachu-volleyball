@@ -28,6 +28,7 @@
  */
 'use strict';
 import { rand } from './rand.js';
+import { takeAction } from './ai/actions.js';
 
 /** @constant @type {number} ground width */
 const GROUND_WIDTH = 432;
@@ -72,10 +73,17 @@ export class PikaPhysics {
    * Create a physics pack
    * @param {boolean} isPlayer1Computer Is player on the left (player 1) controlled by computer?
    * @param {boolean} isPlayer2Computer Is player on the right (player 2) controlled by computer?
+   * @param {boolean} isPlayer1SuperComputer Is player on the right (player 2) controlled by computer?
+   * @param {boolean} isPlayer2SuperComputer Is player on the right (player 2) controlled by computer?
    */
-  constructor(isPlayer1Computer, isPlayer2Computer) {
-    this.player1 = new Player(false, isPlayer1Computer);
-    this.player2 = new Player(true, isPlayer2Computer);
+  constructor(
+    isPlayer1Computer,
+    isPlayer2Computer,
+    isPlayer1SuperComputer = false,
+    isPlayer2SuperComputer = false
+  ) {
+    this.player1 = new Player(false, isPlayer1Computer, isPlayer1SuperComputer);
+    this.player2 = new Player(true, isPlayer2Computer, isPlayer2SuperComputer);
     this.ball = new Ball(false);
   }
 
@@ -127,11 +135,12 @@ class Player {
    * @param {boolean} isPlayer2 Is this player on the right side?
    * @param {boolean} isComputer Is this player controlled by computer?
    */
-  constructor(isPlayer2, isComputer) {
+  constructor(isPlayer2, isComputer, isSuperComputer = false) {
     /** @type {boolean} Is this player on the right side? */
     this.isPlayer2 = isPlayer2; // 0xA0
     /** @type {boolean} Is controlled by computer? */
     this.isComputer = isComputer; // 0xA4
+    this.isSuperComputer = isSuperComputer;
     this.initializeForNewRound();
 
     /** @type {number} -1: left, 0: no diving, 1: right */
@@ -501,6 +510,10 @@ function processPlayerMovementAndSetPlayerPosition(
 ) {
   if (player.isComputer === true) {
     letComputerDecideUserInput(player, ball, theOtherPlayer, userInput);
+  }
+
+  if (player.isSuperComputer === true) {
+    takeAction(player, ball, theOtherPlayer, userInput);
   }
 
   // if player is lying down.. don't move
