@@ -130,6 +130,9 @@ export class PikachuVolleyball {
       this.slowMotionFramesLeft--;
       this.slowMotionNumOfSkippedFrames = 0;
     }
+    // can use this.physics as enviroment inputs?
+    // console.log(this.physics);
+
     // catch keyboard input and freeze it
     this.keyboardArray[0].getInput();
     this.keyboardArray[1].getInput();
@@ -282,9 +285,8 @@ export class PikachuVolleyball {
    * @type {GameState}
    */
   startOfNewGame() {
-    
     if (this.frameCounter === 0) {
-      console.log('start game')
+      console.log('start game');
       this.view.game.visible = true;
       this.gameEnded = false;
       this.roundEnded = false;
@@ -304,7 +306,7 @@ export class PikachuVolleyball {
       this.view.game.drawPlayersAndBall(this.physics);
 
       this.view.fadeInOut.setBlackAlphaTo(1); // set black screen
-      // this.audio.sounds.bgm.play();
+      this.audio.sounds.bgm.play();
     }
 
     this.view.game.drawGameStartMessage(

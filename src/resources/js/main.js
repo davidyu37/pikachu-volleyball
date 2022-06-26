@@ -33,6 +33,7 @@ import 'pixi-sound';
 import { PikachuVolleyball } from './pikavolley.js';
 import { ASSETS_PATH } from './assets_path.js';
 import { setUpUI } from './ui.js';
+import * as tf from '@tensorflow/tfjs';
 
 const settings = PIXI.settings;
 settings.RESOLUTION = window.devicePixelRatio;
@@ -119,7 +120,6 @@ function setup() {
  * @param {PikachuVolleyball} pikaVolley
  */
 function start(pikaVolley) {
-
   ticker.maxFPS = pikaVolley.normalFPS;
   ticker.add(() => {
     pikaVolley.gameLoop();

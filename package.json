@@ -35,6 +35,7 @@
     "workbox-webpack-plugin": "^5.1.1"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^3.18.0",
     "pixi-sound": "3.0.5",
     "pixi.js-legacy": "5.3.3"
   }
